@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Sound</title>
+</head>
+<body>
+
+<audio id="music">
+	<source src="../sounds/music.mp3" type="audio/mpeg" loop></source>
+	<source src="../sounds/music.ogg" type="audio/ogg" loop></source>
+</audio>
+
+<audio id="shootSound">
+	<source src="../sounds/shoot.mp3" type="audio/mpeg"></source>
+	<source src="../sounds/shoot.ogg" type="audio/ogg"></source>
+</audio>
+
+<audio id="explosionSound">
+	<source src="../sounds/explosion.mp3" type="audio/mpeg"></source>
+	<source src="../sounds/explosion.ogg" type="audio/ogg"></source>
+</audio>
+
+<script>
+	var music = document.querySelector("#music");
+	music.addEventListener("canplaythrough", loadHandler, false);
+	music.load();
+	assetsToLoad.push(music);
+	
+	var shootSound = document.querySelector("#shootSound");
+	shootSound.addEventListener("canplaythrough", loadHandler, false);
+	shootSound.load();
+	assetsToLoad.push(shootSound);
+	
+	var explosionSound = document.querySelector("#explosionSound");
+	explosionSound.addEventListener("canplaythrough", loadHandler, false);
+	explosionSound.load();
+	assetsToLoad.push(explosionSound);
+	
+	
+	function loadHandler(){
+		assetsLoaded++;
+		if(assetsLoaded === assetsToLoad.length){
+			//Remove the load event listener from the image and sounds
+			image.removeEventListener("load", loadHandler, false);
+			music.removeEventListener("canplaythrough", loadHandler, false);
+			shootSound.removeEventListener("canplaythrough", loadHandler, false);
+			explosionSound.removeEventListener("canplaythrough", loadHandler, false);
+		
+			//Play the music
+			music.play();
+			music.volume = 0.3;
+			
+			//Start the game
+			gameState = PLAYING;
+		}
+	}
+	
+	function fireMissile(){
+		// ...		
+		//This resets the sound to its start position.
+		shootSound.currentTime = 0;
+		shootSound.play();
+	}
+	
+	function destroyAlien(alien){
+		// ...		
+		//This resets the sound to its start position.
+		explosionSound.currentTime = 0;
+		explosionSound.play();
+	}
+</script>
+
+</body>
+</html>

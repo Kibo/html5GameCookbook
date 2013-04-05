@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Friction</title>
+</head>
+<body>
+
+<script>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Acceleration</title>
+</head>
+<body>
+
+<script>
+var spriteObject = {
+	sourceX: 0,
+	sourceY: 0,
+	sourceWidth: 64,
+	sourceHeight: 64,
+	width: 64,
+	height: 64,
+	x: 0,
+	y: 0,
+	vx: 0,
+	vy: 0,
+	visible: true,
+
+	//Physics properties
+	accelerationX: 0,
+	accelerationY: 0,
+	speedLimit: 5,
+	friction: 0.96,
+	bounce: -0.7,
+	gravity: 0.3,
+	
+	//Platform game properties
+	isOnGround: undefined,
+	jumpForce: -10,
+
+	centerX: function(){
+		return this.x + (this.width / 2);
+	},
+	centerY: function(){
+		return this.y + (this.height / 2);
+	},
+	halfWidth: function(){
+		return this.width / 2;
+	},
+	halfHeight: function(){
+		return this.height / 2;
+	}
+};
+
+function playGame(){ 
+  
+  if(moveUp && !moveDown){
+    ogre.accelerationY = -0.2;
+    ogre.friction = 1;
+  }
+  
+  if(moveDown && !moveUp){
+    ogre.accelerationY = 0.2;
+    ogre.friction = 1;
+  }
+  
+  if(moveLeft && !moveRight){
+    ogre.accelerationX = -0.2;
+    ogre.friction = 1;
+  }
+  
+  if(moveRight && !moveLeft){
+    ogre.accelerationX = 0.2;
+    ogre.friction = 1;
+  }
+  
+  //Set the ogre's velocity and acceleration to zero if none of the keys are being pressed
+  if(!moveUp && !moveDown){
+    ogre.accelerationY = 0;
+    ogre.vy = 0;
+  }
+  
+  if(!moveLeft && !moveRight){
+    ogre.accelerationX = 0;
+    ogre.vx = 0;
+  }
+  
+  if(!moveUp && !moveDown && !moveLeft && !moveRight){
+    ogre.friction = 0.96; 
+  }
+  	
+  //Apply the acceleration
+  ogre.vx += ogre.accelerationX; 
+  ogre.vy += ogre.accelerationY;
+  
+  //Apply friction
+  ogre.vx *= ogre.friction; 
+  ogre.vy *= ogre.friction;
+    
+  //Limit the speed
+  if (ogre.vx > ogre.speedLimit){
+    ogre.vx = ogre.speedLimit;
+  }
+  if (ogre.vx < -ogre.speedLimit){
+    ogre.vx = -ogre.speedLimit;
+  }
+  if (ogre.vy > ogre.speedLimit){
+    ogre.vy = ogre.speedLimit;
+  } 
+  if (ogre.vy < -ogre.speedLimit){
+    ogre.vy = -ogre.speedLimit;
+  }
+  
+  //Limit the speed
+  ogre.vx = Math.min(ogre.speedLimit, Math.max(ogre.vx, -ogre.speedLimit));
+  ogre.vy = Math.min(ogre.speedLimit, Math.max(ogre.vy, -ogre.speedLimit));
+
+  //Move the ogre
+  ogre.x += ogre.vx;
+  ogre.y += ogre.vy;   
+}
+</script>
+
+</body>
+</html>

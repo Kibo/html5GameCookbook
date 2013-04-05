@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Mouse - easing</title>
+</head>
+<body>
+
+<script>
+
+//(origin - destination) * easingValue;
+
+EASING = 0.1;
+
+function playGame(){ 
+  //Figure out the distance between the mouse and the center of the ogre
+  var vx = mouseX - (ogre.x + ogre.halfWidth()); 
+  var vy = mouseY - (ogre.y + ogre.halfHeight());  
+  distance = Math.sqrt(vx * vx + vy * vy);
+	
+//Move the ogre if it's more than 1 pixel away from the mouse 
+  if (distance >= 1){
+    ogre.x += vx * EASING; 
+    ogre.y += vy * EASING;
+  }	
+}
+</script>
+
+</body>
+</html>

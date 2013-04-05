@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Canvas - line</title>
+</head>
+<body>
+
+<canvas id="canvas" width="400" height="400" style="border:1px solid #333;"></canvas>
+
+<script>
+window.onload = function () {
+	var canvas = document.getElementById('canvas');
+	var context = canvas.getContext('2d');
+	
+	canvas.addEventListener('mousedown', function (event) {
+		context.beginPath();
+		context.moveTo( (event.pageX - canvas.offsetLeft), (event.pageY - canvas.offsetTop));
+		canvas.addEventListener('mousemove', onMouseMove, false);
+	}, false);
+	
+	canvas.addEventListener('mouseup', function (event) {
+		canvas.removeEventListener('mousemove', onMouseMove, false);
+	}, false);
+		
+	function onMouseMove (event) {
+		context.lineTo( (event.pageX - canvas.offsetLeft), (event.pageY - canvas.offsetTop));
+		context.stroke();
+	}
+};
+</script>
+</body>
+</html>

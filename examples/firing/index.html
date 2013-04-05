@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Firing</title>
+</head>
+<body>
+
+<script>
+var missiles = [];
+
+var SPACE = 32;
+
+var shoot = false;
+var spaceKeyIsDown = false;
+
+function playGame(){
+	if(shoot){
+		fireMissile();
+		shoot = false;
+	}
+		
+	//Move the missiles
+	for(var i = 0; i < missiles.length; i++){
+		var missile = missiles[i];
+		missile.y += missile.vy;
+		if(missile.y < 0 - missile.height){
+			
+			//Remove the missile from the missiles array
+			removeObject(missile, missiles);
+			
+			//Remove the missile from the sprites array
+			removeObject(missile, sprites);
+			
+			//Reduce the loop counter by 1 to compensate for the removed element
+			i--;
+		}
+	}
+		
+	// hit alien
+	for(var i = 0; i < aliens.length; i++){
+		var alien = aliens[i];
+		for(var j = 0; j < missiles.length; j++){
+			var missile = missiles[j];
+			if( hitTestRectangle(missile, alien) && alien.state === alien.NORMAL){
+					//Destroy the alien
+					destroyAlien(alien);
+					//Update the score
+					score++;
+					//Remove the missile
+					removeObject(missile, missiles);
+					removeObject(missile, sprites);
+					//Subtract 1 from the loop counter to compensate for the removed missile
+					j--;
+			}
+		}
+	}
+}
+
+function fireMissile(){
+	var missile = Object.create(spriteObject);
+	missile.sourceX = 96;
+	missile.sourceWidth = 16;
+	missile.sourceHeight = 16;
+	missile.width = 16;
+	missile.height = 16;
+	missile.x = cannon.centerX() - missile.halfWidth();
+	missile.y = cannon.y - missile.height;
+	
+	missile.vy = -8; //velocity
+	
+	sprites.push(missile);
+	missiles.push(missile);
+}
+
+
+window.addEventListener("keydown", function(event){
+	switch(event.keyCode){		
+		case SPACE:
+			if(!spaceKeyIsDown){
+				shoot = true;
+				spaceKeyIsDown = true;
+			}
+		}
+	}, false);
+
+window.addEventListener("keyup", function(event){
+	switch(event.keyCode){		
+		case SPACE:
+			spaceKeyIsDown = false;
+	}
+}, false);
+
+</script>
+
+</body>
+</html>

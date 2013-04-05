@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Sprite animation</title>
+</head>
+<body>
+
+<canvas width="100" height="100"></canvas>
+
+<script>
+var spriteObject = {
+	image: "../../img/ogre.png",
+	columns: 4,
+	
+	sourceX: 0,
+	sourceY: 0,
+	sourceWidth: 50,
+	sourceHeight: 67,
+	
+	numberOfFrames: 15, //0-15
+	currentFrame: 0,
+	
+	updateAnimation: function(){		
+		this.sourceX = Math.floor(this.currentFrame % this.columns) * this.sourceWidth;
+		this.sourceY = Math.floor(this.currentFrame / this.columns) * this.sourceHeight;
+
+		if(this.currentFrame < this.numberOfFrames){		
+			this.currentFrame++;
+		}else{
+			this.currentFrame = 0;
+		}	
+	}	
+};
+
+var canvas = document.querySelector("canvas");
+var drawingSurface = canvas.getContext("2d");
+
+var image = new Image();
+image.addEventListener("load", loadHandler, false);
+image.src = spriteObject.image;
+
+function updateAnimation(){	
+	setTimeout(updateAnimation,1000);
+	
+	spriteObject.updateAnimation();
+	render();
+}
+
+function render(){
+	drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
+	drawingSurface.drawImage(
+		image,
+		spriteObject.sourceX, spriteObject.sourceY, spriteObject.sourceWidth, spriteObject.sourceHeight,
+		0, 0, spriteObject.sourceWidth, spriteObject.sourceHeight
+	);
+}
+
+function loadHandler(){
+	updateAnimation();
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Resource manager</title>
+</head>
+<body>
+
+<script>
+var LOADING = 0
+var PLAYING = 1;
+var gameState = LOADING;
+
+var assetsLoaded = 0;
+var assetsToLoad = [];
+
+var image = new Image();
+image.addEventListener("load", loadHandler, false);
+image.src = "../../img/ogreState.png";
+assetsToLoad.push(image);
+
+image = new Image();
+image.addEventListener("load", loadHandler, false);
+image.src = "../../img/bg.jpg";
+assetsToLoad.push(image);
+
+image = new Image();
+image.addEventListener("load", loadHandler, false);
+image.src = "../../img/parallax.png";
+assetsToLoad.push(image);
+
+function loadHandler(){
+	assetsLoaded++;
+	if(assetsLoaded === assetsToLoad.length){
+		image.removeEventListener("load", loadHandler, false);
+		gameState = PLAYING;		
+	}
+	
+	console.log( 'state: ' + gameState );	
+}
+</script>
+
+</body>
+</html>

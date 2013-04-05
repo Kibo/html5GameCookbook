@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Rotation</title>
+</head>
+<body>
+
+<canvas id="canvas" width="400" height="400" style="border:1px solid #333;"></canvas>
+
+<script>
+window.onload = function () {
+	function Arrow () {
+		this.x = 0;
+		this.y = 0;
+		this.color = "#ffff00";
+		this.rotation = 0;
+	}
+	Arrow.prototype.draw = function (context) {
+		context.save();
+		context.translate(this.x, this.y);
+		context.rotate(this.rotation);
+		context.lineWidth = 2;
+		context.fillStyle = this.color;
+		context.beginPath();
+		context.moveTo(-50, -25);
+		context.lineTo(0, -25);
+		context.lineTo(0, -50);
+		context.lineTo(50, 0);
+		context.lineTo(0, 50);
+		context.lineTo(0, 25);
+		context.lineTo(-50, 25);
+		context.lineTo(-50, -25);
+		context.closePath();
+		context.fill();
+		context.stroke();
+		context.restore();
+	};
+	
+var canvas = document.getElementById('canvas');
+var context = canvas.getContext('2d');
+var	arrow = new Arrow();
+var vr = 2; //degrees
+
+arrow.x = canvas.width / 2;
+arrow.y = canvas.height / 2;
+
+(function drawFrame (){
+	window.requestAnimationFrame(drawFrame, canvas);
+
+	context.clearRect(0, 0, canvas.width, canvas.height);
+
+	arrow.rotation += vr * Math.PI / 180; //to radians
+	
+	arrow.draw(context);	
+})()
+
+};
+</script>
+
+</body>
+</html>

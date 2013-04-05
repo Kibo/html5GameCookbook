@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Jumping</title>
+</head>
+<body>
+
+<script>
+
+var spriteObject = {
+	sourceX: 0,
+	sourceY: 0,
+	sourceWidth: 64,
+	sourceHeight: 64,
+	width: 64,
+	height: 64,
+	x: 0,
+	y: 0,
+	vx: 0,
+	vy: 0,
+	visible: true,
+
+	//Physics properties
+	accelerationX: 0,
+	accelerationY: 0,
+	speedLimit: 5,
+	friction: 0.96,
+	bounce: -0.7,
+	gravity: 0.3,
+	
+	//Platform game properties
+	isOnGround: undefined,
+	jumpForce: -10,
+
+	centerX: function(){
+		return this.x + (this.width / 2);
+	},
+	centerY: function(){
+		return this.y + (this.height / 2);
+	},
+	halfWidth: function(){
+		return this.width / 2;
+	},
+	halfHeight: function(){
+		return this.height / 2;
+	}
+};
+
+//Directions
+var moveRight = false;
+var moveLeft = false;
+var jump = false;
+
+function playGame(){ 
+  //Left
+  if(moveLeft && !moveRight){
+    ogre.accelerationX = -0.2;
+    ogre.friction = 1;
+  }
+  //Right
+  if(moveRight && !moveLeft){
+    ogre.accelerationX = 0.2;
+    ogre.friction = 1;
+  }
+  //Space
+  if(jump && ogre.isOnGround){
+    ogre.vy += ogre.jumpForce;
+    ogre.isOnGround = false;
+    ogre.friction = 1;
+  }
+  
+  //Set the ogre's acceleration, friction and gravity 
+  //to zero if none of the arrow keys are being pressed
+  if(!moveLeft && !moveRight){
+    ogre.accelerationX = 0; 
+    ogre.friction = 0.96; 
+    ogre.gravity = 0.3;
+  }
+  	
+  //Apply the acceleration
+  ogre.vx += ogre.accelerationX; 
+  ogre.vy += ogre.accelerationY;
+  
+  //Apply friction
+  if(ogre.isOnGround){
+    ogre.vx *= ogre.friction; 
+  }
+  
+  //Apply gravity
+  ogre.vy += ogre.gravity;
+  
+  //Limit the speed
+  //Don't limit the upward speed because it will choke the jump effect.
+  if (ogre.vx > ogre.speedLimit){
+    ogre.vx = ogre.speedLimit;
+  }
+  if (ogre.vx < -ogre.speedLimit){
+    ogre.vx = -ogre.speedLimit;
+  } 
+  if (ogre.vy > ogre.speedLimit * 2){
+    ogre.vy = ogre.speedLimit * 2;
+  }
+
+  //Move the ogre
+  ogre.x += ogre.vx;
+  ogre.y += ogre.vy;
+  
+  //Bounce off the screen edges
+  //Left
+  if(ogre.x < 0)
+  {
+    ogre.vx *= ogre.bounce;
+    ogre.x = 0;
+  }
+  //Top
+  if(ogre.y < 0){
+    ogre.vy *= ogre.bounce;
+    ogre.y = 0;
+  }
+  //Right
+  if(ogre.x + ogre.width > canvas.width){
+    ogre.vx *= ogre.bounce;
+    ogre.x = canvas.width - ogre.width;
+  }
+  //Bottom
+  if(ogre.y + ogre.height > canvas.height){
+    ogre.y = canvas.height - ogre.height;
+    ogre.isOnGround = true;
+    ogre.vy = -ogre.gravity;
+  }
+}
+</script>
+
+</body>
+</html>

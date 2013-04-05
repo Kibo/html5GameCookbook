@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Canvas rotation</title>
+</head>
+<body>
+
+<script>
+function render(){
+	drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
+	if(sprites.length !== 0){		
+		for(var i = 0; i < sprites.length; i++){
+			var sprite = sprites[i];
+
+			//Save the current state of the drawing surface before it's rotated
+			drawingSurface.save();
+
+			//Rotate the canvas
+			drawingSurface.translate(
+				Math.floor(sprite.x + sprite.halfWidth()),
+				Math.floor(sprite.y + sprite.halfHeight())
+			);
+			drawingSurface.rotate(sprite.rotation * Math.PI / 180);
+
+			if(sprite.visible){
+				drawingSurface.drawImage(
+						image,
+						sprite.sourceX, sprite.sourceY, sprite.sourceWidth, sprite.sourceHeight,
+						Math.floor(−sprite.halfWidth()), Math.floor(−sprite.halfHeight()), sprite.width, sprite.height
+				);
+			}
+		//Restore the drawing surface to its state before it was rotated
+		drawingSurface.restore();
+		}
+	}
+}
+</script>
+
+</body>
+</html>

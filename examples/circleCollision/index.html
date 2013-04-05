@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Circle collision</title>
+</head>
+<body>
+
+<script>
+var spriteObject = {
+  sourceX: 0,
+  sourceY: 0,
+  sourceWidth: 64,
+  sourceHeight: 64,
+  width: 64,
+  height: 64,
+  x: 0,
+  y: 0,
+  vx: 0,
+  vy: 0,
+  
+  centerX: function() {
+    return this.x + (this.width / 2);
+  },
+  
+  centerY: function() {
+    return this.y + (this.height / 2);
+  },
+  
+  halfWidth: function() {
+    return this.width / 2;
+  },
+  
+  halfHeight: function(){
+    return this.height / 2;
+  }
+};
+
+function hitTestCircle(c1, c2){
+  //Calculate the vector between the circles’ center points
+  var vx = c1.centerX() - c2.centerX();
+  var vy = c1.centerY() - c2.centerY();
+  
+  //Find the distance between the circles by calculating
+  //the vector's magnitude (how long the vector is)  
+  var magnitude = Math.sqrt(vx * vx + vy * vy);
+  
+  //Add together the circles' total radii
+  var totalRadii = c1.halfWidth() + c2.halfWidth();
+  
+  //Set hit to true if the distance between the circles is
+  //less than their totalRadii
+  var hit = magnitude < totalRadii;
+  
+  return hit;
+}
+
+function blockCircle(sprite1, sprite2){  
+  //Calculate the vector between the circles’ center points
+  var vx = sprite1.centerX() - sprite2.centerX();
+  var vy = sprite1.centerY() - sprite2.centerY();
+  
+  //Find the distance between the circles by calculating
+  //the vector's magnitude (how long the vector is) 
+  var magnitude = Math.sqrt(vx * vx + vy * vy);
+  
+  //Add together the circles' combined half-widths
+  var totalRadii = sprite1.halfWidth() + sprite2.halfWidth();
+  
+  //Figure out if there's a collision
+  if(magnitude < totalRadii){
+	  
+    //Find the amount of overlap between the circles 
+    var overlap = totalRadii - magnitude;
+    
+    //Normalize the vector.
+    //These numbers tell us the direction of the collision
+    dx = vx / magnitude;
+    dy = vy / magnitude;
+
+    //Move circle 1 out of the collision by multiplying
+    //the overlap with the normalized vector and add it to 
+    //circle 1's position
+    sprite1.x += overlap * dx; 
+    sprite1.y += overlap * dy;
+  }
+}
+</script>
+
+</body>
+</html>

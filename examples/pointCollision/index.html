@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Point collision</title>
+</head>
+<body>
+
+<script>
+
+var spriteObject ={
+  sourceX: 0,
+  sourceY: 0,
+  sourceWidth: 64,
+  sourceHeight: 64,
+  x: 0,
+  y: 0,
+  width: 64,
+  height: 64,
+   
+  left: function(){
+    return this.x;
+  },
+  
+  right: function(){
+    return this.x + this.width;
+  },
+  
+  top: function(){
+    return this.y;
+  },
+  
+  bottom: function(){
+    return this.y + this.height;
+  }
+};
+
+
+function hitTestPoint(pointX, pointY, sprite){  
+  return	pointX > sprite.left() 
+  			&& pointX < sprite.right() 
+  			&& pointY > sprite.top() 
+  			&& pointY < sprite.bottom();
+}
+
+</script>
+
+</body>
+</html>

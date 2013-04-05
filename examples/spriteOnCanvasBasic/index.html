@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Sprite canvas basic</title>
+</head>
+<body>
+
+<p>
+	<button id="up">up</button>
+	<button id="down">down</button>	
+	<button id="left">left</button>
+	<button id="right">right</button>	
+	<button id="smaller">smaller</button>
+	<button id="bigger">bigger</button>	
+	<button id="rotateLeft">rotate left</button>
+	<button id="rotateRight">rotate right</button>	
+	<button id="alphaLess">alpha less</button>
+	<button id="alphaMore">alpha more</button>	
+	<button id="shadow">shadow</button>	
+	<button id="visibility">show/ hide</button>
+</p>
+
+<canvas width="550" height="450" style="border:1px solid black"></canvas>
+
+<script>
+window.onload = function() { 
+	
+	var spriteObject = {
+			sourceX: 0,
+			sourceY: 0,
+			sourceWidth: 64,
+			sourceHeight: 64,
+			
+			x: 0,
+			y: 0,
+			width: 64,
+			height: 64,
+						
+			rotation: 0,
+			alpha: 1,
+			shadow: false,
+			visible: true,
+		};
+	
+	var canvas = document.querySelector("canvas");
+	var drawingSurface = canvas.getContext("2d");
+	
+	var sprites = [];
+	
+	var ogre = Object.create(spriteObject);
+		ogre.x = 200;
+		ogre.y = 200;
+		sprites.push( ogre );
+		
+	var image = new Image();
+		image.addEventListener("load", loadHandler, false);
+		image.src = "../../img/ogreSingle.png";
+	
+	function update() {
+		requestAnimationFrame(update, canvas);	//sca 60 fps		
+		render();
+	}
+	
+	function render(){		
+		drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
+		
+		if(sprites.length !== 0){
+			for(var i = 0; i < sprites.length; i++){
+				var sprite = sprites[i];
+				if(sprite.visible){
+					
+					drawingSurface.save();
+					
+					drawingSurface.translate(
+							Math.floor(sprite.x + (sprite.width / 2)),
+							Math.floor(sprite.y + (sprite.height / 2))	
+					);
+										
+					drawingSurface.rotate( sprite.rotation * Math.PI / 180);
+
+					drawingSurface.globalAlpha = sprite.alpha;
+					
+					if(sprite.shadow){
+						drawingSurface.shadowColor = "rgba(100, 100, 100, 0.5)";
+						drawingSurface.shadowOffsetX = 3;
+						drawingSurface.shadowOffsetY = 3;
+						drawingSurface.shadowBlur = 3;
+					}
+				
+					drawingSurface.drawImage(
+						image,
+						sprite.sourceX, sprite.sourceY, sprite.sourceWidth, sprite.sourceHeight,
+						Math.floor(-sprite.width / 2), Math.floor(-sprite.height / 2), sprite.width, sprite.height
+						);
+					
+					drawingSurface.restore();
+				}
+			}
+		}
+	}
+	
+	function loadHandler(){
+		update();
+	}
+	
+	var up = document.querySelector("#up");
+	up.addEventListener("mousedown", upHandler, false);
+
+	var down = document.querySelector("#down");
+	down.addEventListener("mousedown", downHandler, false);
+
+	var right = document.querySelector("#right");
+	right.addEventListener("mousedown", rightHandler, false);
+
+	var left = document.querySelector("#left");
+	left.addEventListener("mousedown", leftHandler, false);
+
+	var visibility = document.querySelector("#visibility");
+	visibility.addEventListener("mousedown", visibilityHandler, false);
+
+	var bigger = document.querySelector("#bigger");
+	bigger.addEventListener("mousedown", biggerHandler, false);
+
+	var smaller = document.querySelector("#smaller");
+	smaller.addEventListener("mousedown", smallerHandler, false);
+
+	var rotateRight = document.querySelector("#rotateRight");
+	rotateRight.addEventListener("mousedown", rotateRightHandler, false);
+
+	var rotateLeft = document.querySelector("#rotateLeft");
+	rotateLeft.addEventListener("mousedown", rotateLeftHandler, false);
+	
+	var alphaMore = document.querySelector("#alphaMore");
+	alphaMore.addEventListener("mousedown", moreAlphaHandler, false);
+	
+	var alphaLess = document.querySelector("#alphaLess");
+	alphaLess.addEventListener("mousedown", lessAlphaHandler, false);
+	
+	var shadow = document.querySelector("#shadow");
+	shadow.addEventListener("mousedown", shadowHandler, false);
+	
+	function upHandler(event){
+		ogre.y -= 10;
+	}
+
+	function downHandler(event){
+		ogre.y += 10;
+	}
+
+	function rightHandler(event){
+		ogre.x += 10;
+	}
+
+	function leftHandler(event){
+		ogre.x -= 10;
+	}
+
+	function visibilityHandler(event){
+		ogre.visible = !ogre.visible;
+	}
+
+	function biggerHandler(event){
+		ogre.height += 10;
+		ogre.width += 10;
+		ogre.x -= 5;
+		ogre.y -= 5;
+	}
+
+	function smallerHandler(event){
+		ogre.height -= 10;
+		ogre.width -= 10;
+		ogre.x += 5;
+		ogre.y += 5;
+	}
+
+	function rotateRightHandler(event){
+		ogre.rotation += 10;
+	}
+
+	function rotateLeftHandler(event){
+		ogre.rotation -= 10;
+	}	
+	
+	function lessAlphaHandler(event){
+		if(ogre.alpha > 0.1){
+			ogre.alpha -= 0.1;
+		}
+	}
+	
+	function moreAlphaHandler(event){
+		if(ogre.alpha < 1){
+			ogre.alpha += 0.1;
+		}
+	}
+	
+	function shadowHandler(event){
+		ogre.shadow = !ogre.shadow;
+	}
+}
+</script>
+
+</body>
+</html>

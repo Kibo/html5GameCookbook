@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Mouse</title>
+</head>
+<body>
+
+<canvas width="800" height="250" style="border: 1px solid black; "></canvas>
+
+<script>
+canvas.style.cursor = "none";
+
+canvas.addEventListener("mousemove", mousemoveHandler, false);
+
+function mousemoveHandler(event){
+	mouseX = event.pageX - canvas.offsetLeft;
+	mouseY = event.pageY - canvas.offsetTop;
+}
+</script>
+
+</body>
+</html>

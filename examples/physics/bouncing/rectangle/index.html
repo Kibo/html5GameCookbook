@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Bouncing - circle</title>
+</head>
+<body>
+
+<script>
+var spriteObject = {
+		sourceX: 0,
+		sourceY: 0,
+		sourceWidth: 64,
+		sourceHeight: 64,
+		width: 64,
+		height: 64,
+		x: 0,
+		y: 0,
+		vx: 0,
+		vy: 0,
+		visible: true,
+
+		//Physics properties
+		accelerationX: 0,
+		accelerationY: 0,
+		speedLimit: 5,
+		friction: 0.96,
+		bounce: -0.7,
+		gravity: 0.3,
+		
+		//Platform game properties
+		isOnGround: undefined,
+		jumpForce: -10,
+
+		centerX: function(){
+			return this.x + (this.width / 2);
+		},
+		centerY: function(){
+			return this.y + (this.height / 2);
+		},
+		halfWidth: function(){
+			return this.width / 2;
+		},
+		halfHeight: function(){
+			return this.height / 2;
+		}
+};
+
+function blockCircle(c1, c2, bounce){  
+  //Set bounce to a default value of false if it's not specified
+  if(typeof bounce === "undefined"){
+    bounce = false;
+  }
+  
+  //Calculate the vector between the circles’ center points
+  var vx = c1.centerX() - c2.centerX();
+  var vy = c1.centerY() - c2.centerY();
+  
+  //Find the distance between the circles by calculating
+  //the vector's magnitude (how long the vector is) 
+  var magnitude = Math.sqrt(vx * vx + vy * vy);
+  
+  //Add together the circles' combined half-widths
+  var combinedHalfWidths = c1.halfWidth() + c2.halfWidth();
+  
+  //Figure out if there's a collision
+  if(magnitude < combinedHalfWidths){
+    //Yes, a collision is happening.
+    //Find the amount of overlap between the circles 
+    var overlap = combinedHalfWidths - magnitude;
+    
+    //Normalize the vector.
+    //These numbers tell us the direction of the collision
+    dx = vx / magnitude;
+    dy = vy / magnitude;
+
+    //Move circle 1 out of the collision by multiplying
+    //the overlap with the normalized vector and add it to 
+    //circle 1's position
+    c1.x += overlap * dx; 
+    c1.y += overlap * dy;
+    
+    //Bounce    
+    if(bounce){
+      //Create a collision vector object to represent the bounce surface
+      var s = {};
+      
+      //Find the bounce surface's vx and vy properties
+      //(This represents the normal of the distance vector between the circles)
+      s.vx = vy; 
+      s.vy = -vx;
+    
+      //Bounce c1 off the surface
+      bounceOffSurface(c1, s);
+    }
+  }
+}
+
+//An optional function
+function bounceOffSurface(o, s){
+  //1. Calculate the collision surface's properties
+  
+  //Find the surface vector's left normal
+  s.lx = s.vy; 
+  s.ly = -s.vx;
+  
+  //Find its magnitude
+  s.magnitude = Math.sqrt(s.vx * s.vx + s.vy * s.vy);
+  
+  //Find its normalized values
+  s.dx = s.vx / s.magnitude;
+  s.dy = s.vy / s.magnitude;
+  
+  //2. Bounce the object (o) off the surface (s)
+  
+  //Find the dot product between the object and the surface
+  var dp1 = o.vx * s.dx + o.vy * s.dy;
+  
+  //Project the object's velocity onto the collision surface
+  var p1Vx = dp1 * s.dx; 
+  var p1Vy = dp1 * s.dy;
+  
+  //Find the dot product of the object and the surface's left normal (s.lx and s.ly)
+  var dp2 = o.vx * (s.lx / s.magnitude) + o.vy * (s.ly / s.magnitude); 
+  
+  //Project the object's velocity onto the surface's left normal
+  var p2Vx = dp2 * (s.lx / s.magnitude);
+  var p2Vy = dp2 * (s.ly / s.magnitude);
+  
+  //Reverse the projection on the surface's left normal
+  p2Vx *= -1; 
+  p2Vy *= -1;
+  
+  //Add up the projections to create a new bounce vector
+  var bounceVx = p1Vx + p2Vx;
+  var bounceVy = p1Vy + p2Vy;
+  
+  //Assign the bounce vector to the object's velocity
+  o.vx = bounceVx; 
+  o.vy = bounceVy;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Scrolling with offset</title>
+</head>
+<body>
+
+<canvas width="600" height="400" style="border: 1px solid black"></canvas>
+
+<script>
+var UP = 38;
+var DOWN = 40;
+var RIGHT = 39;
+var LEFT = 37;
+
+var moveUp = false;
+var moveDown = false;
+var moveRight = false;
+var moveLeft = false;
+
+var spriteObject ={
+	sourceX: 0,
+	sourceY: 0,
+	sourceWidth: 64,
+	sourceHeight: 64,
+	
+	x: 0,
+	y: 0,
+	width: 64,
+	height: 64,
+	vx: 0,
+	vy: 0
+};
+
+var canvas = document.querySelector("canvas");
+var drawingSurface = canvas.getContext("2d");
+
+var sprites = [];
+
+var background = Object.create(spriteObject);
+background.sourceY = 64;
+background.sourceWidth = 1920;
+background.sourceHeight = 1200;
+background.x = 0;
+background.y = 0;
+background.width = 1920;
+background.height = 1200;
+
+sprites.push(background);
+
+var gameWorld = {
+	x: 0,
+	y: 0,
+	width: background.width,
+	height: background.height
+};
+
+var camera = {
+	x: 0,
+	y: 0,
+	width: canvas.width,
+	height: canvas.height,
+	
+	//offset
+	rightInnerBoundary: function(){
+		return this.x + (this.width * 0.75);
+	},
+	
+	leftInnerBoundary: function(){
+		return this.x + (this.width * 0.25);
+	},
+	
+	topInnerBoundary: function(){
+		return this.y + (this.height * 0.25);
+	},
+	
+	bottomInnerBoundary: function(){
+		return this.y + (this.height * 0.75);
+	}
+};
+
+//center camera
+camera.x = (gameWorld.x + gameWorld.width / 2) - camera.width / 2;
+camera.y = (gameWorld.y + gameWorld.height / 2) - camera.height / 2;
+
+var ogre = Object.create(spriteObject);
+ogre.x = (gameWorld.x + gameWorld.width / 2) - ogre.width / 2;
+ogre.y = (gameWorld.y + gameWorld.height / 2) - ogre.height / 2;
+sprites.push(ogre);
+
+var image = new Image();
+image.addEventListener("load", loadHandler, false);
+image.src = "../../img/bg.jpg";
+
+function update() {
+  requestAnimationFrame(update, canvas);
+  
+  if(moveUp && !moveDown){
+   ogre.vy = -5;
+  }
+
+  if(moveDown && !moveUp){
+   ogre.vy = 5;
+  }
+  
+  if(moveLeft && !moveRight){
+   ogre.vx = -5;
+  }
+  
+  if(moveRight && !moveLeft){
+   ogre.vx = 5;
+  }
+  
+  if(!moveUp && !moveDown){
+   ogre.vy = 0;
+  }
+  
+  if(!moveLeft && !moveRight){
+   ogre.vx = 0;
+  }
+  
+  //Move ogre and keep it inside the gameWorld boundaries
+  ogre.x = Math.max(0, Math.min(ogre.x + ogre.vx, gameWorld.width - ogre.width)); 
+  ogre.y = Math.max(0, Math.min(ogre.y + ogre.vy, gameWorld.height - ogre.height));
+     
+  //Scroll the camera
+  if(ogre.x < camera.leftInnerBoundary()){
+  	camera.x = Math.floor(ogre.x - (camera.width * 0.25));
+  }
+  
+  if(ogre.y < camera.topInnerBoundary()){
+  	camera.y = Math.floor(ogre.y - (camera.height * 0.25));
+  }
+  
+  if(ogre.x + ogre.width > camera.rightInnerBoundary()){
+  	camera.x = Math.floor(ogre.x + ogre.width - (camera.width * 0.75));
+  }
+
+  if(ogre.y + ogre.height > camera.bottomInnerBoundary()){
+  	camera.y = Math.floor(ogre.y + ogre.height - (camera.height * 0.75));
+  }
+    
+  //Keep the camera inside the gameWorld boundaries
+  if(camera.x < gameWorld.x){
+    camera.x = gameWorld.x;
+  }
+  
+  if(camera.y < gameWorld.y){
+    camera.y = gameWorld.y;
+  }
+  
+  if(camera.x + camera.width > gameWorld.x + gameWorld.width){
+    camera.x = gameWorld.x + gameWorld.width - camera.width;
+  }
+  
+  if(camera.y + camera.height > gameWorld.height){
+    camera.y = gameWorld.height - camera.height;
+  }
+   
+  render();
+}
+
+function render(){ 
+  drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
+  
+  drawingSurface.save();
+      
+  drawingSurface.translate(-camera.x, -camera.y);
+   
+  if(sprites.length !== 0){
+    for(var i = 0; i < sprites.length; i++){
+      var sprite = sprites[i];
+      drawingSurface.drawImage(
+        image, 
+        sprite.sourceX, sprite.sourceY, sprite.sourceWidth, sprite.sourceHeight,
+        Math.floor(sprite.x), Math.floor(sprite.y), sprite.width, sprite.height
+      ); 
+    }
+  }
+  
+  drawingSurface.restore();
+}
+
+window.addEventListener("keydown", function(event){
+	switch(event.keyCode){
+		case UP:
+			moveUp = true;
+			break;			  
+		
+		case DOWN:
+		   moveDown = true;
+		   break;
+		   
+		case LEFT:
+		   moveLeft = true;
+		   break;  
+		   
+		case RIGHT:
+		   moveRight = true;
+		   break; 
+	 }
+}, false);
+
+window.addEventListener("keyup", function(event){
+	switch(event.keyCode){
+		case UP:
+	   		moveUp = false;
+	   		break;	 
+	 	case DOWN:
+	   		moveDown = false;
+	   		break;	   
+	 	case LEFT:
+	   		moveLeft = false;
+	   		break;  	   
+	 	case RIGHT:
+	   		moveRight = false;
+	   		break; 
+	}
+}, false);
+
+function loadHandler(){ 
+	update();
+}
+
+</script>
+
+</body>
+</html>

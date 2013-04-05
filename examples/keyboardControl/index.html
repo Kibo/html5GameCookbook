@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Keyboard control</title>
+</head>
+<body>
+
+<canvas width="500" height="400" style="border: 1px solid black"></canvas>
+
+<script>
+var UP = 38;
+var DOWN = 40;
+var RIGHT = 39;
+var LEFT = 37;
+
+var spriteObject ={
+	sourceX: 0,
+	sourceY: 0,
+	sourceWidth: 64,
+	sourceHeight: 64,
+	
+	x: 0,
+	y: 0,
+	width: 64,
+	height: 64,
+	vx: 0,
+	vy: 0
+};
+
+var canvas = document.querySelector("canvas");
+var drawingSurface = canvas.getContext("2d");
+
+var sprites = [];
+
+var ogre = Object.create(spriteObject);
+ogre.x = 200;
+ogre.y = 150;
+sprites.push(ogre);
+
+var image = new Image();
+image.addEventListener("load", loadHandler, false);
+image.src = "../../img/ogreSingle.png";
+
+var moveUp = false;
+var moveDown = false;
+var moveRight = false;
+var moveLeft = false;
+
+window.addEventListener("keydown", function(event){
+	switch(event.keyCode){
+		case UP:
+			moveUp = true;
+			break;
+		case DOWN:
+			moveDown = true;
+			break;
+		case LEFT:
+			moveLeft = true;
+			break;
+		case RIGHT:
+			moveRight = true;
+			break;
+		}
+}, false);
+
+window.addEventListener("keyup", function(event){
+	switch(event.keyCode){
+		case UP:
+			moveUp = false;
+			break;
+		case DOWN:
+			moveDown = false;
+			break;
+		case LEFT:
+			moveLeft = false;
+			break;
+		case RIGHT:
+			moveRight = false;
+			break;
+	}
+}, false);
+
+function update(){
+	requestAnimationFrame(update, canvas);
+	
+	if(moveUp && !moveDown){
+		ogre.vy = -5;
+	}
+	
+	if(moveDown && !moveUp){
+		ogre.vy = 5;
+	}
+	
+	if(moveLeft && !moveRight){
+		ogre.vx = -5;
+	}
+
+	if(moveRight && !moveLeft){
+		ogre.vx = 5;
+	}
+	
+	if(!moveUp && !moveDown){
+		ogre.vy = 0;
+	}
+	
+	if(!moveLeft && !moveRight){
+		ogre.vx = 0;
+	}
+	
+	ogre.x += ogre.vx;
+	ogre.y += ogre.vy;
+
+	render();
+}
+
+function render(){
+	drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
+	
+	if(sprites.length !== 0){
+		for(var i = 0; i < sprites.length; i++){
+			var sprite = sprites[i];
+			drawingSurface.drawImage(
+				image,
+				sprite.sourceX, sprite.sourceY, sprite.sourceWidth, sprite.sourceHeight,
+				Math.floor(sprite.x), Math.floor(sprite.y), sprite.width, sprite.height
+			);
+		}
+	}
+}
+
+function loadHandler(){
+	update();
+}
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

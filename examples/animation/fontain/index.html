@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Fontain</title>
+</head>
+<body>
+
+<canvas id="canvas" width="400" height="400" style="border:1px solid #333;"></canvas>
+
+<script>
+window.onload = function () {
+	function Ball (radius, color) {
+		if (radius === undefined) { radius = 40; }
+		if (color === undefined) { color = "#ff0000"; }
+		this.x = 0;
+		this.y = 0;
+		this.radius = radius;
+		this.rotation = 0;
+		this.scaleX = 1;
+		this.scaleY = 1;
+		this.color = color;
+		this.lineWidth = 1;
+		}
+	Ball.prototype.draw = function (context) {
+		context.save();
+		context.translate(this.x, this.y);
+		context.rotate(this.rotation);
+		context.scale(this.scaleX, this.scaleY);
+		context.lineWidth = this.lineWidth;
+		context.fillStyle = this.color;
+		context.beginPath();
+		//x, y, radius, start_angle, end_angle, anti-clockwise
+		context.arc(0, 0, this.radius, 0, (Math.PI * 2), true);
+		context.closePath();
+		context.fill();
+		if (this.lineWidth > 0) {
+			context.stroke();
+		}
+		context.restore();
+		};
+		
+		var canvas = document.getElementById('canvas');
+		var context = canvas.getContext('2d');
+		var balls = [];
+		var numBalls = 100;
+		var gravity = 0.5;
+		
+		for (var ball, i = 0; i < numBalls; i++) {
+			ball = new Ball(2, Math.random() * 0xffffff);
+			ball.x = canvas.width / 2;
+			ball.y = canvas.height;
+			ball.vx = Math.random() * 4 - 2;
+			ball.vy = Math.random() * -10 - 10;
+			balls.push(ball);
+		}
+		
+		(function drawFrame () {
+			window.requestAnimationFrame(drawFrame, canvas);
+			context.clearRect(0, 0, canvas.width, canvas.height);
+			balls.forEach(draw);
+		}());
+		
+		function draw (ball) {
+			ball.vy += gravity;
+			ball.x += ball.vx;
+			ball.y += ball.vy;
+			if (ball.x - ball.radius > canvas.width ||
+				ball.x + ball.radius < 0 ||
+				ball.y - ball.radius > canvas.height ||
+				ball.y + ball.radius < 0) {
+					ball.x = canvas.width / 2;
+					ball.y = canvas.height;
+					ball.vx = Math.random() * 4 - 2;
+					ball.vy = Math.random() * -10 - 10;
+			}
+			ball.draw(context);
+		}	
+};
+</script>
+
+</body>
+</html>

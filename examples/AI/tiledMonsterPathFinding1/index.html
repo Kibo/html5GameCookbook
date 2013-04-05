@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Tiled monster path finding</title>
+</head>
+<body>
+
+<script>
+function changeDirection(monster){
+  //Clear any previous direction the monster has chosen
+  monster.validDirections = [];
+  monster.direction = monster.NONE;
+  
+  //Find the monster's column and row in the array
+  var monsterColumn = Math.floor(monster.x / SIZE);
+  var monsterRow = Math.floor(monster.y / SIZE);
+  
+  //Get a reference to the current level map
+  var currentMap = levelMaps[levelCounter];
+  
+  //Find out what kinds of things are in the map cells 
+  //that surround the monster. If the cells contain a FLOOR cell,
+  //push the corresponding direction into the validDirections array
+  if(monsterRow > 0){
+    var thingAbove = currentMap[monsterRow - 1][monsterColumn];
+    if(thingAbove === FLOOR){
+      monster.validDirections.push(monster.UP);
+    }
+  }
+  if(monsterRow < ROWS - 1){ 
+    var thingBelow = currentMap[monsterRow + 1][monsterColumn];
+    if(thingBelow === FLOOR){
+      monster.validDirections.push(monster.DOWN);
+    }
+  }
+  if(monsterColumn > 0){
+    var thingToTheLeft = currentMap[monsterRow][monsterColumn - 1];
+    if(thingToTheLeft === FLOOR){
+      monster.validDirections.push(monster.LEFT);
+    }
+  } 
+  if(monsterColumn < COLUMNS - 1){
+    var thingToTheRight = currentMap[monsterRow][monsterColumn + 1];
+    if(thingToTheRight === FLOOR){
+      monster.validDirections.push(monster.RIGHT);
+    }
+  } 
+  
+  //The monster's validDirections array now contains 0 to 4 directions that the 
+  //contain FLOOR cells. Which of those directions will the monster
+  //choose to move in?
+  
+  //If a valid direction was found, Figure out if the monster is at an 
+  //maze passage intersection.
+  if(monster.validDirections.length !== 0){
+    //Find out if the monster is at an intersection
+    var upOrDownPassage 
+	  = (monster.validDirections.indexOf(monster.UP) !== -1 
+	  || monster.validDirections.indexOf(monster.DOWN) !== -1);
+	
+	var leftOrRightPassage
+	  = (monster.validDirections.indexOf(monster.LEFT) !== -1 
+	  || monster.validDirections.indexOf(monster.RIGHT) !== -1);
+    
+    //Change the monster's direction if it's at an intersection or
+    //in a cul-de-sac (dead-end)
+    if(upOrDownPassage && leftOrRightPassage 
+	|| monster.validDirections.length === 1)
+    {
+      //Optionally find the closest distance to the alien
+      if(alien !== null && monster.hunt === true){
+        findClosestDirection(monster);
+      }
+      
+      //Assign a random validDirection if the alien object doesn't exist in the game
+      //or a validDirection wasn't found that brings the monster closer to the alien
+      if(alien === null || monster.direction === monster.NONE){
+        var randomNumber = Math.floor(Math.random() * monster.validDirections.length);
+        monster.direction = monster.validDirections[randomNumber];
+      }
+      
+      //Choose the monster's final direction
+	  switch(monster.direction){
+	    case monster.RIGHT:
+	      monster.vx = monster.speed;
+	      monster.vy = 0;
+	      break;
+		    
+	    case monster.LEFT:
+	      monster.vx = -monster.speed;
+	      monster.vy = 0;
+	      break;
+		      
+	    case monster.UP:
+	      monster.vx = 0;
+	      monster.vy = -monster.speed;
+	      break;
+		      
+	    case monster.DOWN:
+	      monster.vx = 0;
+	      monster.vy = monster.speed;
+	  }
+    } 
+  }  
+}
+
+function findClosestDirection(monster){
+  var closestDirection = undefined;
+  
+  //Find the distance between the monster and the alien
+  var vx = alien.centerX() - monster.centerX(); 
+  var vy = alien.centerY() - monster.centerY();
+        
+  //If the distance is greater on the x axis...
+  if(Math.abs(vx) >= Math.abs(vy)){
+    //Try left and right
+    if(vx <= 0){
+      closestDirection = monsterObject.LEFT;        
+    }else{
+      closestDirection = monsterObject.RIGHT;	    
+    }
+  }
+  //If the distance is greater on the y axis...
+  else{
+    //Try up and down
+    if(vy <= 0){
+      closestDirection = monsterObject.UP;
+    }else{
+      closestDirection = monsterObject.DOWN;
+    }
+  }
+  
+  //Find out if the closestDirection is one of the validDirections
+  for(var i = 0; i < monster.validDirections.length; i++){
+    if(closestDirection === monster.validDirections[i]){
+      //If it, assign the closestDirection to the monster's direction
+      monster.direction = closestDirection;
+    }
+  }
+}
+</script>
+
+</body>
+</html>

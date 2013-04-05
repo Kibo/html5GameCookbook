@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Bouncing - screen</title>
+</head>
+<body>
+
+<canvas id="canvas" width="400" height="400" style="border:1px solid #333;"></canvas>
+
+<script>
+window.onload = function () {
+	function Ball (radius, color) {
+		if (radius === undefined) { radius = 40; }
+		if (color === undefined) { color = "#ff0000"; }
+		this.x = 0;
+		this.y = 0;
+		this.radius = radius;
+		this.rotation = 0;
+		this.scaleX = 1;
+		this.scaleY = 1;
+		this.color = color;
+		this.lineWidth = 1;
+	}
+
+	Ball.prototype.draw = function (context) {
+		context.save();
+		context.translate(this.x, this.y);
+		context.rotate(this.rotation);
+		context.scale(this.scaleX, this.scaleY);
+		context.lineWidth = this.lineWidth;
+		context.fillStyle = this.color;
+		context.beginPath();
+		//x, y, radius, start_angle, end_angle, anti-clockwise
+		context.arc(0, 0, this.radius, 0, (Math.PI * 2), true);
+		context.closePath();
+		context.fill();
+		if (this.lineWidth > 0) {
+		context.stroke();
+		}
+		context.restore();
+	};
+		
+	var canvas = document.getElementById('canvas');
+	var context = canvas.getContext('2d');
+	var ball = new Ball();
+	var vx = Math.random() * 10 - 5;
+	var vy = Math.random() * 10 - 5;
+	var bounce = -0.7;
+	gravity = 0.1;
+	
+	ball.x = canvas.width / 2;
+	ball.y = canvas.height / 2;
+	
+	ball.x = canvas.width / 2;
+	ball.y = canvas.height / 2;
+	
+	(function drawFrame () {
+		window.requestAnimationFrame(drawFrame, canvas);
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		var left = 0;
+		var right = canvas.width;
+		var top = 0;
+		var bottom = canvas.height;
+				
+		vy += gravity;
+		ball.x += vx;
+		ball.y += vy;
+		
+		if (ball.x + ball.radius > right) {
+			ball.x = right - ball.radius;
+			vx *= bounce;
+		} else if (ball.x - ball.radius < left) {
+			ball.x = left + ball.radius;
+			vx *= bounce;
+		}
+		
+		if (ball.y + ball.radius > bottom) {
+			ball.y = bottom - ball.radius;
+			vy *= bounce;
+		} else if (ball.y - ball.radius < top) {
+			ball.y = top + ball.radius;
+			vy *= bounce;
+		}
+		
+		ball.draw(context);
+	}());
+	
+}
+</script>
+
+</body>
+</html>

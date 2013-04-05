@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Game loop</title>
+</head>
+<body>
+<canvas width="800" height="100" style="border:1px solid #333;"></canvas>
+
+<script>
+var spriteObject = {	
+	x: 0,
+	y: 0,
+	width: 64,
+	height: 64
+};
+
+var canvas = document.querySelector("canvas");
+var drawingSurface = canvas.getContext("2d");
+
+var sprites = [];
+
+var ogre = Object.create(spriteObject);
+ogre.x = 0;
+ogre.y = 20;
+sprites.push( ogre );
+
+var image = new Image();
+image.addEventListener("load", loadHandler, false);
+image.src = "../../img/ogreSingle.png";
+
+function loadHandler(){
+	update();
+}
+
+function update(){
+	window.requestAnimationFrame(update, canvas);
+	ogre.x += 1;
+	if( ogre.x > 800){
+		ogre.x = 0;
+	}
+	render();
+}
+
+function render(){
+	drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
+	if(sprites.length !== 0){
+		for(var i = 0; i < sprites.length; i++){
+			var sprite = sprites[i];
+			drawingSurface.drawImage(
+				image,
+				0, 0, sprite.width, sprite.height,
+				Math.floor(sprite.x), Math.floor(sprite.y), sprite.width, sprite.height
+			);
+		}
+	}
+}
+</script>
+</body>
+</html>

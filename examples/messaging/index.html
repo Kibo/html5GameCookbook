@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Keyboard control</title>
+</head>
+<body>
+
+<script>
+var messageObject = {
+	x: 0,
+	y: 0,
+	visible: true,
+	text: "Message",
+	font: "normal bold 20px Helvetica",
+	fillStyle: "red",
+	textBaseline: "top"
+};
+
+var messages = [];
+
+function render(){
+	
+	// ...
+	
+	if(messages.length !== 0){
+		for(var i = 0; i < messages.length; i++){
+			var message = messages[i];
+			if(message.visible){
+				drawingSurface.font = message.font;
+				drawingSurface.fillStyle = message.fillStyle;
+				drawingSurface.textBaseline = message.textBaseline;
+				drawingSurface.fillText(message.text, message.x, message.y);
+			}
+		}
+	}
+}
+</script>
+
+</body>
+</html>

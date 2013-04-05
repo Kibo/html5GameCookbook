@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Switch levels</title>
+</head>
+<body>
+
+<script>
+
+//Game states
+var LOADING = 0;
+var BUILD_MAP = 1;
+var PLAYING = 2;
+var OVER = 3;
+var LEVEL_COMPLETE = 4;
+var gameState = LOADING;
+
+var levelMaps = [];
+var levelGameObjects = [];
+
+var levelCounter = 0;
+
+//Level 0
+var map0 = [...];
+levelMaps.push(map0);
+var gameObjects0 = [...];
+levelGameObjects.push(gameObjects0);
+
+//Level 1
+var map1 = [...];
+levelMaps.push(map1);
+var gameObjects1 = [...];
+levelGameObjects.push(gameObjects1);
+
+function update() {
+	requestAnimationFrame(update, canvas);
+	
+	switch(gameState){
+		case LOADING:
+			console.log("loading...");
+			break;
+		case BUILD_MAP:
+			buildMap(levelMaps[levelCounter]); // !!!
+			buildMap(levelGameObjects[levelCounter]); / /!!!
+			createOtherSprites();
+			gameState = PLAYING;
+			break;
+		case PLAYING:
+			//playGame();
+			break;			
+		case LEVEL_COMPLETE:
+			levelComplete();
+			break;			
+		case OVER:
+			//endGame();
+			break;
+}
+
+render();
+}
+
+function levelComplete(){
+  //Make the leveCompleteDisplay visible
+  levelCompleteDisplay.visible = true;
+  
+  //Update the timer that changes the level by one
+  levelChangeTimer++;
+  
+  //Load the next level after 60 frames
+  if(levelChangeTimer === 60){
+    loadNextLevel();
+  }
+  
+  function loadNextLevel(){
+    //Reset the timer that changes the level
+    levelChangeTimer = 0;
+		
+	//Update the levelCounter by 1
+    levelCounter++;
+  
+    //Load the next level if there is one or end the game if there isn't
+    if(levelCounter < levelMaps.length){
+      //Clear the arrays of objects
+      
+	  sprites = [];
+	  monsters = [];
+	  boxes = [];
+	  stars = [];
+	    
+	  //Reset any gameVariables
+	  starsCollected = 0;
+	    
+	  //Make sure the gameWorld size matches the size of the next level
+      gameWorld.width = levelMaps[levelCounter][0].length * SIZE;
+      gameWorld.height = levelMaps[levelCounter].length * SIZE;
+	    
+      //Re-center the camera
+      camera.x = (gameWorld.x + gameWorld.width / 2) - camera.width / 2;
+      camera.y = (gameWorld.y + gameWorld.height / 2) - camera.height / 2;
+	    
+      //Build the maps for the next level
+      gameState = BUILD_MAP;
+    }else{
+      gameState = OVER;
+    }
+  }
+}
+</script>
+
+</body>
+</html>

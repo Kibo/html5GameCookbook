@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Canvas - quadratic</title>
+</head>
+<body>
+
+<canvas id="canvas" width="400" height="400" style="border:1px solid #333;"></canvas>
+
+<script>
+window.onload = function () {
+	var canvas = document.getElementById('canvas');
+	var context = canvas.getContext('2d');
+	var x0 = 100;
+	var y0 = 200;
+	var x2 = 300;
+	var y2 = 200;	
+	canvas.addEventListener('mousemove', function (event) {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		var x1 = event.pageX - canvas.offsetLeft;
+		var y1 = event.pageY - canvas.offsetTop;
+		//curve toward mouse
+		context.beginPath();
+		context.moveTo(x0, y0);
+		context.quadraticCurveTo(x1, y1, x2, y2);
+		context.stroke();
+	}, false);
+};
+</script>
+</body>
+</html>

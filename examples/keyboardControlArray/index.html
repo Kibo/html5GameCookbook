@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Keyboard control</title>
+</head>
+<body>
+
+<canvas width="500" height="400" style="border: 1px solid black"></canvas>
+
+<script>
+var spriteObject ={
+	sourceX: 0,
+	sourceY: 0,
+	sourceWidth: 64,
+	sourceHeight: 64,
+	
+	x: 0,
+	y: 0,
+	width: 64,
+	height: 64,
+	vx: 0,
+	vy: 0
+};
+
+var keys = {
+
+	UP: 38,
+	DOWN: 40,
+	RIGHT: 39,
+	LEFT: 37,
+	
+	pressedKeys: [],
+	
+	keyIsPressed: function(key){
+		return this.pressedKeys.indexOf(key) !== -1
+	}
+};
+
+var canvas = document.querySelector("canvas");
+var drawingSurface = canvas.getContext("2d");
+
+var sprites = [];
+
+var ogre = Object.create(spriteObject);
+ogre.x = 200;
+ogre.y = 150;
+sprites.push(ogre);
+
+var image = new Image();
+image.addEventListener("load", loadHandler, false);
+image.src = "../../img/ogreSingle.png";
+
+window.addEventListener("keydown", function(event){		 
+	if(	event.keyCode === keys.UP		|| 
+		event.keyCode === keys.DOWN 	|| 
+		event.keyCode === keys.RIGHT	|| 
+		event.keyCode === keys.LEFT){		
+	    var key = keys.pressedKeys.indexOf(event.keyCode);	    
+	    if(key === -1){
+	      keys.pressedKeys.push(event.keyCode);
+	    }
+	}
+}, false);
+
+window.addEventListener("keyup", function(event){		  
+	var key = keys.pressedKeys.indexOf(event.keyCode);
+	if(key !== -1)	{
+		keys.pressedKeys.splice(key, 1);
+	}
+}, false);
+
+function update(){
+  requestAnimationFrame(update, canvas);
+
+  if(keys.keyIsPressed(keys.UP) && !keys.keyIsPressed(keys.DOWN)) {
+    ogre.vy = -5;
+  }
+  
+  if(keys.keyIsPressed(keys.DOWN) && !keys.keyIsPressed(keys.UP)){
+	  ogre.vy = 5;
+  }
+  
+  if(keys.keyIsPressed(keys.LEFT) && !keys.keyIsPressed(keys.RIGHT)){
+	  ogre.vx = -5;
+  }
+  
+  if(keys.keyIsPressed(keys.RIGHT) && !keys.keyIsPressed(keys.LEFT)){
+	  ogre.vx = 5;
+  }
+  
+  if(!keys.keyIsPressed(keys.UP) && 
+	 !keys.keyIsPressed(keys.DOWN)){
+	  ogre.vy = 0;
+  }
+  
+  if(!keys.keyIsPressed(keys.RIGHT) && 
+	 !keys.keyIsPressed(keys.LEFT)){
+	  ogre.vx = 0;
+  }
+  	
+  ogre.x += ogre.vx;
+  ogre.y += ogre.vy;
+  
+  render();
+}
+
+function render(){
+	drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
+	
+	if(sprites.length !== 0){
+		for(var i = 0; i < sprites.length; i++){
+			var sprite = sprites[i];
+			drawingSurface.drawImage(
+				image,
+				sprite.sourceX, sprite.sourceY, sprite.sourceWidth, sprite.sourceHeight,
+				Math.floor(sprite.x), Math.floor(sprite.y), sprite.width, sprite.height
+			);
+		}
+	}
+}
+
+function loadHandler(){ 
+	update();
+}
+</script>
+
+</body>
+</html>

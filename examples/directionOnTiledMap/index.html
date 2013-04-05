@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Direction</title>
+</head>
+<body>
+
+<script>
+/*
+switch(monster.direction){
+	case monster.RIGHT:
+		monster.vx = monster.speed;
+		monster.vy = 0;
+		break;
+	case monster.LEFT:
+		monster.vx = −monster.speed;
+		monster.vy = 0;
+		break;
+	case monster.UP:
+		monster.vx = 0;
+		monster.vy = −monster.speed;
+		break;
+	case monster.DOWN:
+		monster.vx = 0;
+		monster.vy = monster.speed;
+}
+*/
+
+//Use instead of the code above
+var moveByDirection =
+	[
+		[0, -1],
+		[0, 1],
+		[−1, 0],
+		[1, 0]
+	];
+	monster.vx = monster.speed * moveByDirection[monster.direction — 1][0];
+	monster.vy = monster.speed * moveByDirection[monster.direction — 1][1];
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Tiled map</title>
+</head>
+<body>
+
+<script>
+var map =
+	[
+	[3,3,3,3,3,3,3,3,3,3,3],
+	[3,1,1,1,1,1,1,1,1,1,3],
+	[3,1,2,2,2,1,2,1,2,1,3],
+	[3,1,1,2,1,1,1,1,1,1,3],
+	[3,1,1,1,1,2,1,1,2,1,3],
+	[3,1,2,1,2,2,1,2,2,1,3],
+	[3,1,1,1,1,1,2,1,1,1,3],
+	[3,3,3,3,3,3,3,3,3,3,3]
+	];
+	
+var gameObjects =
+	[
+	[0,0,0,0,0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,0,0,0,5,0],
+	[0,0,0,0,0,4,0,0,0,0,0],
+	[0,0,5,0,0,0,0,0,0,0,0],
+	[0,0,0,0,0,0,5,0,0,0,0],
+	[0,0,0,0,5,0,0,5,0,0,0],
+	[0,0,0,0,0,0,0,0,0,0,0]
+	];
+	
+//Map code
+var EMPTY = 0;
+var FLOOR = 1;
+var BOX = 2;
+var WALL = 3;
+var ALIEN = 4;
+var BOMB = 5;
+
+//The size of each tile cell
+var SIZE = 64;
+
+//The number of rows and columns
+var ROWS = map.length;
+var COLUMNS = map[0].length;
+
+//The number of columns on the tilesheet
+var tilesheetColumns = 5;
+
+//Game states
+var LOADING = 0;
+var BUILD_MAP = 1;
+var PLAYING = 2;
+var OVER = 3;
+var gameState = LOADING;
+
+function update() {
+	requestAnimationFrame(update, canvas);
+	
+	switch(gameState){
+		case LOADING:
+			console.log("loading...");
+			break;
+		case BUILD_MAP:
+			buildMap(map);
+			buildMap(gameObjects);
+			createOtherObjects();
+			gameState = PLAYING;
+			break;
+		case PLAYING:
+			//playGame();
+			break;
+		case OVER:
+			//endGame();
+			break;
+}
+
+render();
+}
+
+function buildMap(levelMap){	
+	for(var row = 0; row < ROWS; row++){
+		for(var column = 0; column < COLUMNS; column++){
+			var currentTile = levelMap[row][column];
+			if(currentTile !== EMPTY){
+				//Find the tile's X and Y positions on the tilesheet
+				var tilesheetX = Math.floor((currentTile—1) % tilesheetColumns) * SIZE;
+				var tilesheetY = Math.floor((currentTile—1) / tilesheetColumns) * SIZE;
+				
+				switch (currentTile){
+				
+					case FLOOR:
+						var floor = Object.create(spriteObject);
+						floor.sourceX = tilesheetX;
+						floor.sourceY = tilesheetY;
+						floor.x = column * SIZE;
+						floor.y = row * SIZE;
+						sprites.push(floor);
+						break;
+					
+					case BOX:
+						var box = Object.create(spriteObject);
+						box.sourceX = tilesheetX;
+						box.sourceY = tilesheetY;
+						box.x = column * SIZE;
+						box.y = row * SIZE;
+						sprites.push(box);
+						boxes.push(box);
+						break;
+					
+					case WALL:
+						var wall = Object.create(spriteObject);
+						wall.sourceX = tilesheetX;
+						wall.sourceY = tilesheetY;
+						wall.x = column * SIZE;
+						wall.y = row * SIZE;
+						sprites.push(wall);
+						break;
+					
+					case BOMB:
+						var bomb = Object.create(spriteObject);
+						bomb.sourceX = tilesheetX;
+						bomb.sourceY = tilesheetY;
+						bomb.sourceWidth = 48;
+						bomb.sourceHeight = 36;
+						bomb.width = 48;
+						bomb.height = 36;
+						bomb.x = column * SIZE + 10;
+						bomb.y = row * SIZE + 16;
+						bombs.push(bomb);
+						sprites.push(bomb);
+						break;
+					
+					case ALIEN:				
+						alien = Object.create(spriteObject);
+						alien.sourceX = tilesheetX;
+						alien.sourceY = tilesheetY;
+						alien.x = column * SIZE;
+						alien.y = row * SIZE;
+						sprites.push(alien);
+						break;		
+				}
+			}		
+		}		
+	}
+}
+
+function createOtherObjects(){
+	//score box
+	//life box
+	//...
+}
+</script>
+
+</body>
+</html>

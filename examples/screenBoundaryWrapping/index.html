@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Screen boundary - wrapping</title>
+</head>
+<body>
+
+<script>
+function update(){
+		
+	requestAnimationFrame(update, canvas);
+	
+	if(moveUp && !moveDown){
+		ogre.vy = −5;
+	}
+	
+	if(moveDown && !moveUp){
+		ogre.vy = 5;
+	}
+
+	if(moveLeft && !moveRight){
+		ogre.vx = −5;
+	}
+	
+	if(moveRight && !moveLeft){
+		ogre.vx = 5;
+	}
+	
+	if(!moveUp && !moveDown){
+		ogre.vy = 0;
+	}
+	
+	if(!moveLeft && !moveRight){
+		ogre.vx = 0;
+	}
+	
+	//boundary wrapping
+	if(ogre.x + ogre.width < 0){
+		ogre.x = 550;
+	}
+	
+	if(ogre.y + ogre.height < 0){
+		ogre.y = 400;
+	}
+	
+	if(ogre.x > canvas.width){
+		ogre.x = 0 - ogre.width;
+	}
+	
+	if(ogre.y > canvas.height){
+		ogre.y = 0 - ogre.height;
+	}
+	
+	render();
+}
+</script>
+
+</body>
+</html>

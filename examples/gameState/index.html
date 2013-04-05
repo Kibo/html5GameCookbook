@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Game state</title>
+</head>
+<body>
+
+<script>
+var LOADING = 0
+var PLAYING = 1;
+var OVER = 2;
+gameState = LOADING;
+
+// ...
+
+//load assets there
+function loadHandler(){
+	//...
+	gameState = PLAYING;
+	//...
+}
+
+//After the game creates the sprites and initializes the game variables, 
+//the main program calls the update
+update();
+
+function update(){
+	requestAnimationFrame(update, canvas);
+	
+	switch(gameState){
+		case LOADING:
+			console.log("loading...");
+			break;
+		case PLAYING:
+			playGame();
+			break;
+		case OVER:
+			endGame();
+			break;
+	}
+	
+	render();
+}
+
+function playGame(){
+
+	if(moveLeft && !moveRight){
+		cannon.vx = −8;
+	}
+
+	if(moveRight && !moveLeft){
+		cannon.vx = 8;
+	}
+
+	if(!moveLeft && !moveRight){
+		cannon.vx = 0;
+	}
+
+	cannon.x = Math.max(0, Math.min(cannon.x + cannon.vx, canvas.width - cannon.width));
+}
+
+function endGame(){
+	// ...
+}
+
+</script>
+</body>
+</html>

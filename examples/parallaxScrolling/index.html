@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Parallax scrolling</title>
+</head>
+<body>
+
+<canvas width="800" height="250" style="border: 1px solid black; "></canvas>
+
+<script>
+var RIGHT = 39;
+var LEFT = 37;
+
+var moveRight = false;
+var moveLeft = false;
+
+var spriteObject ={
+		sourceX: 0,
+		sourceY: 0,
+		sourceWidth: 64,
+		sourceHeight: 64,
+		
+		x: 0,
+		y: 0,
+		width: 64,
+		height: 64,
+		vx: 0,
+		vy: 0
+};
+
+var canvas = document.querySelector("canvas");
+var drawingSurface = canvas.getContext("2d");
+
+var sprites = [];
+
+var distantBackground = Object.create(spriteObject);
+	distantBackground.sourceY = 64;
+	distantBackground.sourceWidth = 2000;
+	distantBackground.sourceHeight = 184;	
+	distantBackground.x = 0;
+	distantBackground.y = 0;
+	distantBackground.width = 2000;
+	distantBackground.height = 184;
+	
+sprites.push(distantBackground);
+
+var foreground = Object.create(spriteObject);
+	foreground.sourceY = 150;
+	foreground.sourceWidth = 2000;
+	foreground.sourceHeight = 616;	
+	foreground.x = 0;
+	foreground.y = 0;
+	foreground.width = 2000;
+	foreground.height = 250;
+	
+sprites.push(foreground);
+
+var gameWorld = {
+	x: 0,
+	y: 0,
+	width: foreground.width,
+	height: foreground.height,		
+};
+
+var camera = {
+	x: 0,
+	y: 0,
+	width: canvas.width,
+	height: canvas.height,
+	
+	vx: 0,
+	previousX: 0,
+	
+	//offset
+	rightInnerBoundary: function(){
+		return this.x + (this.width * 0.75);
+	},
+	
+	leftInnerBoundary: function(){
+		return this.x + (this.width * 0.25);
+	},			
+};
+
+//center
+camera.x = (gameWorld.x + gameWorld.width / 2) - camera.width / 2;
+camera.y = (gameWorld.y + gameWorld.height / 2) - camera.height / 2;
+
+var ogre = Object.create(spriteObject);
+	ogre.x = (gameWorld.x + gameWorld.width / 2) - ogre.width / 2;
+	ogre.y = 180;
+sprites.push(ogre);
+
+var image = new Image();
+image.addEventListener("load", loadHandler, false);
+image.src = "../../img/parallax.png";
+
+function update(){
+	requestAnimationFrame(update, canvas);	
+	
+	if(moveLeft && !moveRight){
+		ogre.vx = -5;
+	}
+
+	if(moveRight && !moveLeft){
+		ogre.vx = 5;
+	}
+
+	if(!moveLeft && !moveRight){
+		ogre.vx = 0;
+	}
+	
+	ogre.x = Math.max(0, Math.min(ogre.x + ogre.vx, gameWorld.width - ogre.width));
+	
+	//Scroll the camera
+	if(ogre.x < camera.leftInnerBoundary()){
+		camera.x = Math.floor(ogre.x - (camera.width * 0.25));
+	}
+	
+	if(ogre.x + ogre.width > camera.rightInnerBoundary()){
+		camera.x = Math.floor(ogre.x + ogre.width - (camera.width * 0.75));
+	}
+	
+	//The camera's world boundaries
+	if(camera.x < gameWorld.x){
+		camera.x = gameWorld.x;
+	}
+	
+	if(camera.x + camera.width > gameWorld.x + gameWorld.width){
+		camera.x = gameWorld.x + gameWorld.width - camera.width;
+	}	
+	
+	//Figure out the camera's velocity by subtracting its position in the
+	//previous frame from its position in this frame
+	camera.vx = camera.x - camera.previousX;
+		
+	//Move the distantBackground at half the speed of the camera
+	distantBackground.x += camera.vx / 2;
+	
+	//Capture the camera's current X position so we can use it as the
+	//previousX value in the next frame
+	camera.previousX = camera.x;
+		
+	render();
+}
+
+function render(){ 
+	  drawingSurface.clearRect(0, 0, canvas.width, canvas.height);
+	  
+	  drawingSurface.save();
+	      
+	  drawingSurface.translate(-camera.x, -camera.y);
+	   
+	  if(sprites.length !== 0){
+	    for(var i = 0; i < sprites.length; i++){
+	      var sprite = sprites[i];
+	      drawingSurface.drawImage(
+	        image, 
+	        sprite.sourceX, sprite.sourceY, sprite.sourceWidth, sprite.sourceHeight,
+	        Math.floor(sprite.x), Math.floor(sprite.y), sprite.width, sprite.height
+	      ); 
+	    }
+	  }
+	  
+	  drawingSurface.restore();
+};
+
+window.addEventListener("keydown", function(event){
+	switch(event.keyCode){
+		case LEFT:
+			moveLeft = true;
+			break;
+		case RIGHT:
+			moveRight = true;
+			break;
+	}
+}, false);
+
+window.addEventListener("keyup", function(event){
+	switch(event.keyCode){
+		case LEFT:
+			moveLeft = false;
+			break;
+
+		case RIGHT:
+			moveRight = false;
+			break;
+	}
+}, false);
+
+function loadHandler(){ 
+	update();
+}
+</script>
+
+</body>
+</html>

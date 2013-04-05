@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Screen boundary - blocking</title>
+</head>
+<body>
+
+<script>
+function update(){
+		
+	requestAnimationFrame(update, canvas);
+	
+	if(moveUp && !moveDown){
+		ogre.vy = −5;
+	}
+	
+	if(moveDown && !moveUp){
+		ogre.vy = 5;
+	}
+
+	if(moveLeft && !moveRight){
+		ogre.vx = −5;
+	}
+	
+	if(moveRight && !moveLeft){
+		ogre.vx = 5;
+	}
+	
+	if(!moveUp && !moveDown){
+		ogre.vy = 0;
+	}
+	
+	if(!moveLeft && !moveRight){
+		ogre.vx = 0;
+	}
+	
+	/*
+	if (ogre.x < 0){
+		ogre.x = 0;
+	}
+	
+	if (ogre.y < 0){
+		ogre.y = 0;
+	}
+	
+	if (ogre.x + ogre.width > canvas.width){
+		ogre.x = canvas.width - ogre.width;
+	}
+	
+	if (ogre.y + ogre.height > canvas.height){
+		ogre.y = canvas.height - ogre.height;
+	}
+	*/
+	
+	ogre.x = Math.max(0, Math.min(ogre.x + ogre.vx, canvas.width - ogre.width));
+	ogre.y = Math.max(0, Math.min(ogre.y + ogre.vy, canvas.height - ogre.height));
+	
+	render();
+}
+</script>
+
+</body>
+</html>
