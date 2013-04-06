@@ -20,7 +20,7 @@ General techniques of computer games.
 - Level ([switch level](#))
 - AI ([tiled monster](#), [path finding 1](#) )
 - Physics ( [velocity](#), [acceleration](#), [friction](#), [bouncing](#), [gravity](#), [jumping](#))
-- Mouse ([position](#), [easing](#), [follower](#))
+- Mouse ([position](#), [easing](#), [follower](#), [dragging](#), [throwing](#))
 - Touch ([position](#))
 - Animation ( [rotation](#), [waves](#), [circle](#), [ellipse](#), [fontain](#) )
 - Canvas ([line](#))

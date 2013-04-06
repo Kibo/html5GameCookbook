@@ -2,10 +2,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Friction</title>
+<title>Dragging</title>
 </head>
 <body>
-
 <canvas id="canvas" width="400" height="400" style="border:1px solid #333;"></canvas>
 
 <script>
@@ -42,35 +41,53 @@ Ball.prototype.draw = function (context) {
 	context.restore();
 };
 
+Ball.prototype.getBounds = function () {
+  return {
+    x: this.x - this.radius,
+    y: this.y - this.radius,
+    width: this.radius * 2,
+    height: this.radius * 2
+  };
+};
+
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
 var ball = new Ball();
-
-var vx = Math.random() * 12 - 6;
-var vy = Math.random() * 12 - 6;
-var friction = 0.1;
-
 ball.x = canvas.width / 2;
 ball.y = canvas.height / 2;
+
+canvas.addEventListener("mousedown", function(event){
+	var mouseX = event.pageX - canvas.offsetLeft;
+	var mouseY = event.pageY - canvas.offsetTop;
+
+	if (containsPoint(ball.getBounds(), mouseX, mouseY)) {
+		canvas.addEventListener('mouseup', onMouseUp, false);
+		canvas.addEventListener('mousemove', onMouseMove, false);
+	}
+}, false);
+
+function onMouseUp () {
+	canvas.removeEventListener('mouseup', onMouseUp, false);
+	canvas.removeEventListener('mousemove', onMouseMove, false);
+}
+
+function onMouseMove (event) {
+	ball.x = event.pageX - canvas.offsetLeft;
+	ball.y = event.pageY - canvas.offsetTop;
+}
 
 (function drawFrame () {
 	window.requestAnimationFrame(drawFrame, canvas);
 	context.clearRect(0, 0, canvas.width, canvas.height);
-
-	var magnitude = Math.sqrt(vx * vx + vy * vy);
-	var angle = Math.atan2(vy, vx);
-
-	if (magnitude > friction) {
-	  magnitude -= friction;
-	} else {
-	  magnitude = 0;
-	}
-	vx = Math.cos(angle) * magnitude;
-	vy = Math.sin(angle) * magnitude;
-	ball.x += vx;
-	ball.y += vy;
 	ball.draw(context);
 }());
+
+function containsPoint( rect, x, y ){
+	 return !(x < rect.x ||
+           x > rect.x + rect.width ||
+           y < rect.y ||
+           y > rect.y + rect.height);
+}
 
 };
 </script>
