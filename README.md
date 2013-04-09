@@ -1,4 +1,4 @@
-# HTML5 game cookbook v0.2
+# HTML5 game cookbook v0.3
 
 General techniques of computer games.
 
@@ -23,7 +23,7 @@ General techniques of computer games.
 - Mouse ([position](#), [follower](#), [dragging](#), [throwing](#))
 - Touch ([position](#))
 - Animation ( [rotation](#), [waves](#), [circle](#), [ellipse](#), [fontain](#), [easing](#) )
-- Canvas ([line](#))
+- Canvas ([line](#), [quadraticCurve](#))
 
 
 ###Contact me
