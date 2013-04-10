@@ -10,7 +10,7 @@ General techniques of computer games.
 - Keyboard control ([conditional](#), [array](#))
 - Screen boundary ([blocking](#), [wrapping](#), [scrolling](#), [scrolling with offset](#))
 - [Paralax scrolling](#)
-- Collision ([point](#), [circle](#), [rectangle](#), [blocking rectangle](#) [change state](#))
+- Collision ([point1](#), [point2](#), [circle](#), [rectangle1](#), [rectangle2](#), [blocking rectangle](#) [change state](#), [multiple objects](#) )
 - Score ([health meter](#), [score](#))
 - [Firing](#)
 - [Messaging](#)
