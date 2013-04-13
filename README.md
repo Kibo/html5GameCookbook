@@ -22,7 +22,7 @@ General techniques of computer games.
 - Physics ( [velocity](#), [acceleration](#), [friction](#), [bouncing](#), [gravity](#), [jumping](#))
 - Mouse ([position](#), [follower](#), [dragging](#), [throwing](#))
 - Touch ([position](#))
-- Animation ( [rotation](#), [waves](#), [circle](#), [ellipse](#), [fontain](#), [easing](#) )
+- Animation ( [rotation](#), [waves](#), [circle](#), [ellipse](#), [fontain](#), [easing](#), [triangle moving](#))
 - Canvas ([line](#), [quadraticCurve](#))
 
 
