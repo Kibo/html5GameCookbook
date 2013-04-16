@@ -18,7 +18,7 @@ General techniques of computer games.
 - [Timer](#)
 - Tiled map( [building](#), [direction](#))
 - Level ([switch level](#))
-- AI ([tiled monster](#), [path finding 1](#), [standing](#), [loiter](#), [hen](#) )
+- AI ([tiled monster](#), [path finding 1](#), [standing](#), [looking](#), [hen](#) )
 - Physics ( [velocity](#), [acceleration](#), [friction](#), [bouncing](#), [gravity](#), [jumping](#))
 - Mouse ([position](#), [follower](#), [dragging](#), [throwing](#))
 - Touch ([position](#))
