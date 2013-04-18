@@ -38,6 +38,8 @@ var ogre = {
 	
 	state:0, //look	
 	henState:0, //init
+	radius:15,
+	easing:0.05,
 	
 	//sprite animation
 	direction: 0,
@@ -50,7 +52,19 @@ var ogre = {
 		this.sourceYPos = this.sourceY;				
 	},
 	
-	update:function(){			
+	update:function(){	
+		
+		if(this.isCollision(mouseX, mouseY)){
+			var dx = (this.x + this.width/2) - mouseX;
+			var dy = (this.y + this.height/2) - mouseY;				
+			var angle = Math.atan2( dy, dx );
+				 							
+			this.targetX += Math.cos(angle) * this.radius;
+			this.targetY += Math.sin(angle) * this.radius;
+			
+			this.setDirection( this.targetX - (this.x + this.width/2), this.targetY - (this.y + this.height/2));			
+			this.henState = 3;
+		}		
 					
 		switch(this.henState){			
 			case 0:
@@ -97,6 +111,20 @@ var ogre = {
 		
 	henRun:function(){
 		
+		if( !(gameTimer % 3)){
+			this.updateSpriteAnimation();
+		}
+		
+		var dx = this.targetX - (this.x + this.width/2);
+		var dy = this.targetY - (this.y + this.height/2);
+		if( Math.abs(dx) > 5 && Math.abs(dy) > 5 ){ //stop easing
+			var vx = dx * this.easing;
+			var vy = dy * this.easing;
+			this.x += vx;
+			this.y += vy;							
+		}else{
+			this.henState = 0; 	
+		}
 	},
 		
 	moveTo:function(targetX, targetY){
@@ -171,6 +199,13 @@ var ogre = {
 		    		 this.direction = this.directions.UP;	 			    	     	
 		     }
 	},
+	
+	isCollision:function(pointX, pointY){						
+		var dx = (this.x + this.width/2) - pointX,
+			dy = (this.y + this.height/2) - pointY,
+			dist = Math.sqrt(dx * dx + dy * dy);														
+			return dist < this.radius;
+	},
 }
 
 canvas = document.querySelector("canvas");
@@ -183,6 +218,12 @@ ogre.init();
 var image = new Image();
 image.addEventListener("load", function(){ update(); }, false);
 image.src = "../../../img/animals.png";
+
+var mouseX = 0, mouseY = 0;
+canvas.addEventListener("mousemove", function(event){
+	mouseX = event.pageX - canvas.offsetLeft;
+	mouseY = event.pageY - canvas.offsetTop;	
+}, false);
 
 function update(){	
 	ogre.update();		
