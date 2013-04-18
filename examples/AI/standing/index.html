@@ -6,7 +6,8 @@
 </head>
 <body>
 
-<canvas id="canvas" width="400" height="400" style="border:1px solid #333;"></canvas>
+<h3>Standing</h3>
+<canvas id="canvas" width="200" height="200" style="border:1px solid #333;"></canvas>
 
 <script>
 window.onload = function () {
@@ -15,6 +16,7 @@ var gameTimer = 0;
 var gameTimerResetTime = 600; //10sec
 
 var ogre = {
+	states:{ STANDING:0 },
 	directions:{ DOWN:0, LEFT:1, RIGHT:2, UP:3,},
 	
 	sourceX: 0,
@@ -26,54 +28,50 @@ var ogre = {
 	y: 0,
 	width: 50,
 	height: 67,
-		
-	visible: true,
-	angle: 0,
-					
-	stepX: 0,
-	stepY: 0,
-	speed:1,
 	
+	state:0,
+	standingChangeTime: 180, //3sec
+			
 	//sprite animation
 	direction: 0,
 	numberOfFrames: 3, //0-3
 	currentFrame: 0,
-	timer: 0,
-		
+	
 	init:function(){
 		this.sourceXPos = this.sourceX;
 		this.sourceYPos = this.sourceY;
 	},
 	
-	standing:function(){
+	update:function(){
+		switch(this.state){
+				case this.states.STANDING:
+					this.stand();					
+					break;
+		}					
+	},
+	
+	stand:function(){
 		
-		if( !(gameTimer % 180) ){
+		if( !(gameTimer % this.standingChangeTime) ){
 			this.direction = Math.floor(Math.random() * 3);
 			console.log( this.direction );				
 			this.changeSprite();	
+		}						
+	},
+		
+	updateSpriteAnimation: function(){										
+		this.changeSprite();
+												
+		if(this.currentFrame < this.numberOfFrames){		
+			this.currentFrame++;
+		}else{
+			this.currentFrame = 0;
 		}						
 	},
 	
 	changeSprite:function(){
 		this.sourceX = this.currentFrame * this.sourceWidth + this.sourceXPos;
 		this.sourceY = this.direction * this.sourceHeight + this.sourceYPos;	
-	},
-	
-	/*
-	 * Update sprite animation
-	 */
-	updateSpriteAnimation: function(){						
-				
-		//this.setDirection( this.stepX, this.stepY );
-						
-		this.sourceX = this.currentFrame * this.sourceWidth + this.sourceXPos;
-		this.sourceY = this.direction * this.sourceHeight + this.sourceYPos;
-							
-		if(this.currentFrame < this.numberOfFrames){		
-			this.currentFrame++;
-		}else{
-			this.currentFrame = 0;
-		}						
 	},
 	
 	/*
@@ -108,9 +106,10 @@ image.addEventListener("load", function(){ update(); }, false);
 image.src = "../../../img/ogre.png";
 
 function update(){	
-	ogre.standing();		
-	render();
 	
+	ogre.update();		
+	
+	render();	
 	gameTimer == gameTimerResetTime ? gameTimer = 0 : gameTimer++;	
 	requestAnimationFrame(update, canvas);
 }
