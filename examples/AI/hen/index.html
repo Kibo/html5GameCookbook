@@ -16,7 +16,7 @@ var gameTimer = 0;
 var gameTimerResetTime = 600; //10sec
 
 var ogre = {
-	states:{ STANDING:0, LOOKING:1},		
+	states:{ HEN:0},		
 	directions:{ DOWN:0, LEFT:1, RIGHT:2, UP:3,},
 	
 	sourceX: 96,
@@ -28,18 +28,18 @@ var ogre = {
 	y: 0,
 	width: 32,
 	height: 32,
-		
-	visible: true,
+			
 	angle: 0,
 					
 	stepX: 0,
 	stepY: 0,
 	speed:0.3,
 	
-	state:0, //look	
+	state:0, //hen
 	henState:0, //init
-	radius:15,
-	easing:0.05,
+	radius: 15,
+	easing: 0.05,
+	henWalk: 32, //px
 	
 	//sprite animation
 	direction: 0,
@@ -53,17 +53,16 @@ var ogre = {
 	},
 	
 	update:function(){	
-		
+		switch(this.state){
+			case this.states.HEN:
+				this.hen();						
+				break;
+		}															
+	},
+	
+	hen:function(){		
 		if(this.isCollision(mouseX, mouseY)){
-			var dx = (this.x + this.width/2) - mouseX;
-			var dy = (this.y + this.height/2) - mouseY;				
-			var angle = Math.atan2( dy, dx );
-				 							
-			this.targetX += Math.cos(angle) * this.radius;
-			this.targetY += Math.sin(angle) * this.radius;
-			
-			this.setDirection( this.targetX - (this.x + this.width/2), this.targetY - (this.y + this.height/2));			
-			this.henState = 3;
+			this.henPrepareRun()
 		}		
 					
 		switch(this.henState){			
@@ -78,16 +77,20 @@ var ogre = {
 			case 2:
 				this.henStand();					
 				break;
-				
+			
 			case 3:
+				this.henPrepareRun();					
+				break;
+				
+			case 4:
 				this.henRun();
 				break;																			
-		}																
+		}		
 	},
 	
 	henInit:function(){		
-		this.targetX = this.x + (Math.random() * 64) - 32;
-		this.targetY = this.y + (Math.random() * 64) - 32;
+		this.targetX = this.x + (Math.random() * 2 * this.henWalk) - this.henWalk;
+		this.targetY = this.y + (Math.random() * 2 * this.henWalk) - this.henWalk;
 		this.setDirection( this.targetX - this.x, this.targetY - this.y );	
 		this.henState = 1;
 	},
@@ -108,6 +111,18 @@ var ogre = {
 			this.henState = 0;	
 		}	
 	},
+	
+	henPrepareRun:function(){
+		var dx = this.centerX() - mouseX;
+		var dy = this.centerY() - mouseY;				
+		var angle = Math.atan2( dy, dx );
+				 							
+		this.targetX += Math.cos(angle) * this.radius;
+		this.targetY += Math.sin(angle) * this.radius;
+			
+		this.setDirection( this.targetX - this.centerX(), this.targetY - this.centerY() );			
+		this.henState = 4;
+	},
 		
 	henRun:function(){
 		
@@ -115,14 +130,15 @@ var ogre = {
 			this.updateSpriteAnimation();
 		}
 		
-		var dx = this.targetX - (this.x + this.width/2);
-		var dy = this.targetY - (this.y + this.height/2);
-		if( Math.abs(dx) > 5 && Math.abs(dy) > 5 ){ //stop easing
+		var dx = this.targetX - this.centerX();
+		var dy = this.targetY - this.centerY();
+		if( Math.abs(dx) > 5 && Math.abs(dy) > 5 ){ 
 			var vx = dx * this.easing;
 			var vy = dy * this.easing;
 			this.x += vx;
 			this.y += vy;							
-		}else{
+		
+		}else{ //stop easing
 			this.henState = 0; 	
 		}
 	},
@@ -166,10 +182,7 @@ var ogre = {
 		this.sourceX = this.currentFrame * this.sourceWidth + this.sourceXPos;
 		this.sourceY = this.direction * this.sourceHeight + this.sourceYPos;	
 	},
-	
-	/*
-	 * Update sprite animation
-	 */
+
 	updateSpriteAnimation: function(){						
 										
 		this.changeSprite();
@@ -181,12 +194,6 @@ var ogre = {
 		}						
 	},
 	
-	/*
-	 * Set move-state bases of sprite position.
-	 * 
-	 * @param {Number} vx
-	 * @param {Number} vy
-	 */
 	setDirection:function( vx, vy ){					
 		   if(Math.abs(vx) > Math.abs(vy)){		   	
 			   (vx >= 0) ? 
@@ -201,10 +208,18 @@ var ogre = {
 	},
 	
 	isCollision:function(pointX, pointY){						
-		var dx = (this.x + this.width/2) - pointX,
-			dy = (this.y + this.height/2) - pointY,
+		var dx = this.centerX() - pointX,
+			dy = this.centerY() - pointY,
 			dist = Math.sqrt(dx * dx + dy * dy);														
 			return dist < this.radius;
+	},
+	
+	centerX:function(){
+		return this.x + this.width/2;
+	},
+	
+	centerY:function(){
+		return this.y + this.height/2;	
 	},
 }
 

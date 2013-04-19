@@ -25,6 +25,9 @@ General techniques of computer games.
 - Animation ( [rotation](#), [waves](#), [circle](#), [ellipse](#), [fontain](#), [easing](#), [easing after mouse touch](#) , [triangle moving](#))
 - Canvas ([line](#), [quadraticCurve](#))
 
+###It may interest you to know
+- [Tiled map builder](https://github.com/Kibo/TiledMapBuilder) module for Crafty game engine
+- [Dialogue builder](https://github.com/Kibo/dialoguesBuilder) GUI tool for creating interactive dialogues for video games.
 
 ###Contact me
 - tomasjurman@gmail.com

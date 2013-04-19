@@ -74,12 +74,6 @@ var ogre = {
 		this.sourceY = this.direction * this.sourceHeight + this.sourceYPos;	
 	},
 	
-	/*
-	 * Set move-state bases of sprite position.
-	 * 
-	 * @param {Number} vx
-	 * @param {Number} vy
-	 */
 	setDirection:function( vx, vy ){
 		   if(Math.abs(vx) > Math.abs(vy)){
 			   (vx >= 0) ? 
