@@ -25,6 +25,9 @@ General techniques of computer games.
 - Animation ( [rotation](https://github.com/Kibo/html5GameCookbook/blob/master/examples/animation/rotation/index.html), [waves](https://github.com/Kibo/html5GameCookbook/blob/master/examples/animation/waves/index.html), [circle](https://github.com/Kibo/html5GameCookbook/blob/master/examples/animation/circularMovement/index.html), [ellipse](https://github.com/Kibo/html5GameCookbook/blob/master/examples/animation/ellipticalMovement/index.html), [fontain](https://github.com/Kibo/html5GameCookbook/blob/master/examples/animation/fontain/index.html), [easing](https://github.com/Kibo/html5GameCookbook/blob/master/examples/animation/easing/index.html), [easing after mouse touch](https://github.com/Kibo/html5GameCookbook/blob/master/examples/animation/easingAfterMouseTouch/index.html) , [triangle moving](https://github.com/Kibo/html5GameCookbook/blob/master/examples/animation/triangleMoving/index.html))
 - Canvas ([line](https://github.com/Kibo/html5GameCookbook/blob/master/examples/canvas/line/index.html), [quadraticCurve](https://github.com/Kibo/html5GameCookbook/blob/master/examples/canvas/quadraticCurve/index.html))
 
+###It may interest you to know
+- [Tiled map builder](https://github.com/Kibo/TiledMapBuilder) module for Crafty game engine
+- [Dialogue builder](https://github.com/Kibo/dialoguesBuilder) GUI tool for creating interactive dialogues for video games.
 
 ###Contact me
 - tomasjurman@gmail.com

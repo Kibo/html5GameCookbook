@@ -15,7 +15,7 @@ var gameTimer = 0;
 var gameTimerResetTime = 600; //10sec
 
 var ogre = {
-	states:{ STANDING:0, LOOKING:1},		
+	states:{ LOOKING:0,},		
 	directions:{ DOWN:0, LEFT:1, RIGHT:2, UP:3,},
 	
 	sourceX: 0,
@@ -27,15 +27,14 @@ var ogre = {
 	y: 0,
 	width: 50,
 	height: 67,
-		
-	visible: true,
+			
 	angle: 0,
 					
 	stepX: 0,
 	stepY: 0,
 	speed:1,
 	
-	state:1, //look
+	state:0, //looking
 	lookRadius:100,
 	lookState:0, //init
 	
@@ -54,8 +53,12 @@ var ogre = {
 		this.YPos = this.y;					
 	},
 	
-	update:function(){		
-		this.look();															
+	update:function(){					
+		switch(this.state){
+				case this.states.LOOKING:
+					this.look();						
+					break;
+		}														
 	},
 	
 	look:function(){
@@ -126,8 +129,7 @@ var ogre = {
 			this.setDirection( this.XPos - this.x, this.YPos - this.y );	
 			
 			this.lookState++; 	
-		}
-									
+		}								
 	},
 	
 	moveTo:function(targetX, targetY){
@@ -169,10 +171,7 @@ var ogre = {
 		this.sourceX = this.currentFrame * this.sourceWidth + this.sourceXPos;
 		this.sourceY = this.direction * this.sourceHeight + this.sourceYPos;	
 	},
-	
-	/*
-	 * Update sprite animation
-	 */
+		
 	updateSpriteAnimation: function(){						
 										
 		this.changeSprite();
@@ -184,12 +183,6 @@ var ogre = {
 		}						
 	},
 	
-	/*
-	 * Set move-state bases of sprite position.
-	 * 
-	 * @param {Number} vx
-	 * @param {Number} vy
-	 */
 	setDirection:function( vx, vy ){					
 		   if(Math.abs(vx) > Math.abs(vy)){		   	
 			   (vx >= 0) ? 
@@ -215,9 +208,10 @@ var image = new Image();
 image.addEventListener("load", function(){ update(); }, false);
 image.src = "../../../img/ogre.png";
 
-function update(){	
+function update(){		
 	ogre.update();		
-	render();
+	
+	render();	
 	
 	gameTimer == gameTimerResetTime ? gameTimer = 0 : gameTimer++;	
 	requestAnimationFrame(update, canvas);
